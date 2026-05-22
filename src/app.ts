@@ -1,6 +1,7 @@
 import express from "express"
 import type { Application, Request, Response } from "express";
 import { authRoute } from "./modules/auth/auth.route";
+import { issuesRouter } from "./modules/issues/issues.route";
 
 
 
@@ -16,6 +17,7 @@ app.get("/" ,(req : Request, res:Response)=>{
     })
 })
 app.use("/api/auth" , authRoute);
+app.use("/api/issues", issuesRouter);
 
 
 export default app;
