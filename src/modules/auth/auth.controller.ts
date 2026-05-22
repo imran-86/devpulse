@@ -20,7 +20,15 @@ const registerUser = async(req : Request,res : Response)=>{
     })
    }
 }
-
+const loginUser = async(req : Request,res : Response)=>{
+   try{
+      const result = await authService.loginUserIntoDB(req.body);
+   }catch(error){
+     console.log(error);
+     
+   }
+}
 export const authController = {
     registerUser,
+    loginUser,
 }
