@@ -1,5 +1,8 @@
 import { pool } from "../../db";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken"
+import config from "../../config";
+import { log } from "console";
 
 const registerUserIntoDB = async(payload : {
     name : string,
@@ -57,10 +60,25 @@ const loginUserIntoDB = async(payload :{
         
     //   }
 
+    
+    const jwtTokenPayload = {
+        id : userInfo.id,
+        name : userInfo.name,
+        role : userInfo.role,
+    }
+    // console.log("Access secret ",config.jwt_accessSecret);
+    
+    
+    const token = jwt.sign(jwtTokenPayload,config.jwt_accessSecret as string,{
+        expiresIn : "1d",
+    })
 
     
+    const {password : _,...userInformation} = userInfo;
 
-     
+     return { token,
+        user : userInformation,
+      };
         
 }
 

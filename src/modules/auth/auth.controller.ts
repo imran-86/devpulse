@@ -23,10 +23,32 @@ const registerUser = async(req : Request,res : Response)=>{
 const loginUser = async(req : Request,res : Response)=>{
    try{
       const result = await authService.loginUserIntoDB(req.body);
-   }catch(error){
-     console.log(error);
-     
-   }
+      // console.log(result);
+      
+      const {token , user} = result;
+
+      
+   res.cookie("Token",token, {
+      secure: false,
+      httpOnly: true,
+      sameSite: "lax",
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Login successful",
+      data: {
+        token : token,
+        user : user
+      }
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+      error: error,
+    });
+  }
 }
 export const authController = {
     registerUser,
