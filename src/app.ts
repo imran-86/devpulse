@@ -1,5 +1,6 @@
 import express from "express"
 import type { Application, Request, Response } from "express";
+import { authRoute } from "./modules/auth/auth.route";
 
 
 
@@ -14,6 +15,7 @@ app.get("/" ,(req : Request, res:Response)=>{
         author : "Imran Ahmed"
     })
 })
+app.use("/api/auth" , authRoute);
 
 
 export default app;
