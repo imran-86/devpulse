@@ -30,7 +30,7 @@ const getSingleIssuesFromDB = async(id : string)=>{
     `,[id])
 
     if(result.rows.length === 0){
-        return {rows : []};
+        throw new Error("Issue not found");
     }
 
     const fetchIssue = result.rows[0];
@@ -69,8 +69,42 @@ const deleteIssueFromDB = async (id: string) => {
     return result;
 };
 
+const updateIssueInDB = async (
+    id: string,
+    payload: {
+        title?: string;
+        description?: string;
+        type?: string;
+    }
+) => {
+    const checkIssues = await pool.query(
+        `SELECT * FROM "issues" WHERE id = $1`,
+        [id]
+    );
+    if (checkIssues.rows.length === 0) {
+        throw new Error("Issue not found");
+    }
+    const existingIssue = checkIssues.rows[0];
+    const title = payload.title??existingIssue.title;
+    const description = payload.description??existingIssue.description;
+    const type = payload.type??existingIssue.type;
+    const result = await pool.query(
+        `UPDATE issues 
+         SET title = $1, 
+             description = $2, 
+             type = $3, 
+             updated_at = CURRENT_TIMESTAMP 
+         WHERE id = $4 
+         RETURNING *`,
+        [title, description, type, id]
+    );
+
+    return result;
+};
+
 export const issuesService = {
     createIssuesInDB,
     getSingleIssuesFromDB,
-    deleteIssueFromDB
+    deleteIssueFromDB,
+    updateIssueInDB
 }

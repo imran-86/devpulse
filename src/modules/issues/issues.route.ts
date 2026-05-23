@@ -20,6 +20,7 @@ issuesController.deleteIssue)
 router.patch("/:id",
     auth(USER_ROLE.contributor,USER_ROLE.maintainer),
     isMaintainerOrContributor,
+    issuesController.updateIssue
     
 );
 
