@@ -1,8 +1,13 @@
 import { Router } from "express";
-import { routerController } from "./issues.controller";
+import { issuesController } from "./issues.controller";
+
+import auth from "../../middleware/auth"
+import { USER_ROLE } from "../../types";
 
 const router = Router();
 
-router.post('/' , routerController.createIssues)
+router.post('/' , auth(USER_ROLE.contributor,USER_ROLE.maintainer), issuesController.createIssues)
+
+router.get('/:id' , issuesController.getSingleIssues)
 
 export const issuesRouter = router

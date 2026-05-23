@@ -3,9 +3,36 @@ import { issuesService } from "./issues.service"
 
 
 const createIssues = async(req : Request, res : Response)=>{
-     const result = await issuesService.createIssuesInDB(req.body);
+    req.body.id = req.user?.id;
+    console.log("user data from req ",req.user);
+    console.log("user data from body ",req.body);
+    
+
+     
+    try {
+   const result = await issuesService.createIssuesInDB(req.body);
+    res.status(201).json({
+      success: true,
+      message: "Issue created successfully",
+      data: result.rows[0],
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+      error: error,
+    });
+  }
+     
 }
 
-export const routerController = {
+const getSingleIssues = async(req: Request,res : Response)=> {
+   const {id} = req.params;
+//    console.log(id);
+   
+}
+
+export const issuesController = {
     createIssues,
+    getSingleIssues
 }
