@@ -49,6 +49,43 @@ It includes role‑based access (Maintainer / Contributor), full CRUD on issues,
    ```bash
    git clone https://github.com/your-username/devpulse.git
    cd devpulse
-  2. **Install dependencies**  
-    ```bash
+  2. **Install dependencies**    
+    
      npm install
+  3.**Create .env**   
+
+  PORT=5000  
+  DATABASE_URL=postgresql://user:password@localhost:5432/devpulse  
+J WT_ACCESS_SECRET=your_super_secret_jwt_key  
+4. **Start the development server**  
+npm start  
+
+
+## 📁 Database Schema Summary
+
+### `users` table
+
+| Column     | Type                        | Description                 |
+|------------|-----------------------------|-----------------------------|
+| id         | SERIAL PRIMARY KEY          | Auto‑increment user ID      |
+| name       | VARCHAR NOT NULL            | User's full name            |
+| email      | VARCHAR UNIQUE NOT NULL     | Login email                 |
+| password   | TEXT NOT NULL               | bcrypt hash                 |
+| role       | VARCHAR NOT NULL            | `maintainer` / `contributor`|
+| created_at | TIMESTAMP DEFAULT NOW()     | Auto‑generated timestamp    |
+| updated_at | TIMESTAMP DEFAULT NOW()     | Auto‑updated timestamp      |
+
+### `issues` table
+
+| Column       | Type                        | Description                         |
+|--------------|-----------------------------|-------------------------------------|
+| id           | SERIAL PRIMARY KEY          | Auto‑increment issue ID             |
+| title        | VARCHAR(150) NOT NULL       | Short headline (max 150 chars)      |
+| description  | TEXT NOT NULL               | Detailed explanation                |
+| type         | VARCHAR(20) NOT NULL        | `bug` / `feature_request`           |
+| status       | VARCHAR(20) DEFAULT 'open'  | `open`, `in_progress`, `resolved`   |
+| reporter_id  | INTEGER NOT NULL            | References `users.id`               |
+| created_at   | TIMESTAMP DEFAULT NOW()     | Auto‑generated timestamp            |
+| updated_at   | TIMESTAMP DEFAULT NOW()     | Auto‑updated on change              |
+
+> **Note:** No foreign key constraint is used on `reporter_id` – validation is handled in application logic (as per project requirements).
