@@ -22,7 +22,39 @@ const createIssuesInDB = async(payload :{
     
     
 }
+const getSingleIssuesFromDB = async(id : string)=>{
+//   console.log("Id ",typeof(id));
+
+  const result = await pool.query(`
+    SELECT * FROM "issues" WHERE id=$1
+    `,[id])
+
+    if(result.rows.length === 0){
+        return {rows : []};
+    }
+
+    const fetchIssue = result.rows[0];
+
+    const reporterId = fetchIssue.reporter_id;
+
+    const userResult = await pool.query(
+        `SELECT id, name, role FROM users WHERE id = $1`,
+        [reporterId]
+    );
+    const reporter = userResult.rows[0] || null;
+
+    const finalResult = {
+        ...fetchIssue,
+        reporter: reporter
+    };
+
+    delete finalResult.reporter_id
+
+    return { rows: [finalResult] };
+  
+}
 
 export const issuesService = {
     createIssuesInDB,
+    getSingleIssuesFromDB
 }

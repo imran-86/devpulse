@@ -16,13 +16,15 @@ const auth = (...roles : ROLES[])=>{
                 res.status(401).json({
                     success : false,
                     message : "Unauthorized access",
-                })
+                });
+
+                return;
             }
 
             const decode = jwt.verify(token as string,
                 config.jwt_accessSecret as string,
             ) as JwtPayload;
-            console.log("decoded value ",decode);
+            // console.log("decoded value ",decode);
             
 
             
@@ -42,6 +44,7 @@ const auth = (...roles : ROLES[])=>{
           success: false,
           message: "User not found!",
         });
+        return;
            }
 
         if (roles.length && !roles.includes(user.role)) {
@@ -49,6 +52,7 @@ const auth = (...roles : ROLES[])=>{
           success: false,
           message: "Forbidden!!,This role have no access!",
         });
+        return;
       }
 
       req.user = decode;
