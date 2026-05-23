@@ -4,11 +4,10 @@ import { issuesService } from "./issues.service"
 
 const createIssues = async(req : Request, res : Response)=>{
     req.body.id = req.user?.id;
-    console.log("user data from req ",req.user);
-    console.log("user data from body ",req.body);
+    // console.log("user data from req ",req.user);
+    // console.log("user data from body ",req.body);
     
 
-     
     try {
    const result = await issuesService.createIssuesInDB(req.body);
     res.status(201).json({
@@ -108,9 +107,35 @@ const updateIssue = async (req: Request, res: Response) => {
         }
     }
 };
+const getAllIssues = async (req: Request, res: Response) => {
+    try {
+        const sort = req.query.sort as 'newest' | 'oldest' | undefined;
+        const type = req.query.type as 'bug' | 'feature_request' | undefined;
+        const status = req.query.status as 'open' | 'in_progress' | 'resolved' | undefined;
+
+        const result = await issuesService.getAllIssuesFromDB({
+            sort: sort || 'newest',
+            type,
+            status,
+        });
+
+        res.status(200).json({
+            success: true,
+            data: result.rows,
+        });
+    } catch (error: any) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+            error: error,
+        });
+    }
+};
+
 export const issuesController = {
     createIssues,
     getSingleIssues,
     deleteIssue,
-    updateIssue
+    updateIssue,
+    getAllIssues,
 }

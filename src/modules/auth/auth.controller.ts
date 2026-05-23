@@ -1,24 +1,26 @@
 import type { Request, Response } from "express";
 import { authService } from "./auth.service";
+import sendResponse from "../../utils/sendResponse";
 
 const registerUser = async(req : Request,res : Response)=>{
    try{
     const result = await authService.registerUserIntoDB(req.body);
-    console.log(result.rows[0]);
-
-    res.status(201).json({
-        success : true,
-        message : "User registered successfully",
-        data : result.rows[0],
-    })
+    // console.log(result.rows[0]);
     
-   }catch(error : any){
-    res.status(500).json({
-        success : false,
-        message : error.message,
-        error : error,
-    })
-   }
+    sendResponse(res, {
+      statusCode: 201,
+      success: true,
+      message: "User registered successfully",
+      data: result.rows[0],
+    });
+  } catch (error: any) {
+    sendResponse(res, {
+      statusCode: 500,
+      success: false,
+      message: error.message,
+      error: error,
+    });
+  }
 }
 const loginUser = async(req : Request,res : Response)=>{
    try{
@@ -43,7 +45,8 @@ const loginUser = async(req : Request,res : Response)=>{
       }
     });
   } catch (error: any) {
-    res.status(500).json({
+    sendResponse(res, {
+      statusCode: 500,
       success: false,
       message: error.message,
       error: error,

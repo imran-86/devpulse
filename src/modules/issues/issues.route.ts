@@ -23,5 +23,6 @@ router.patch("/:id",
     issuesController.updateIssue
     
 );
+router.get("/", issuesController.getAllIssues);
 
 export const issuesRouter = router
