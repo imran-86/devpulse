@@ -49,3 +49,5 @@ It includes role‑based access (Maintainer / Contributor), full CRUD on issues,
    ```bash
    git clone https://github.com/your-username/devpulse.git
    cd devpulse
+  2. **Install dependencies**
+     npm install
